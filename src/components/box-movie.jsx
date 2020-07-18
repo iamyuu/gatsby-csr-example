@@ -56,7 +56,9 @@ export default function MovieBox(props) {
           </Skeleton>
 
           <Skeleton isLoaded={!loading} w="100px" mt="5px">
-            <Text fontSize="sm">{formatDate(release_date)}</Text>
+            <Text fontSize="sm">
+              {formatDate(release_date) || "Jan 1, 1970"}
+            </Text>
           </Skeleton>
         </Box>
       </Link>
