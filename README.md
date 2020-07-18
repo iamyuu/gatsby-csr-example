@@ -8,7 +8,7 @@ Find your next movie or create your watchlist with this App. It include rating, 
 ## User Stories
 
 - [ ] User can see all the latest movie on the front page
-- [ ] User can click on any of the movie to go to their own separate page
+- [x] ~~User can click on any of the movie to go to their own separate page~~
 - [ ] User can then see all about the movie ratings, about, actors present on each separate movie page
 
 ## Bonus features
