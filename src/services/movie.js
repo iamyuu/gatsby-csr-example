@@ -22,3 +22,13 @@ const fetcher = async (endpoint, params = {}) => {
 export function useNowPlaying() {
   return useQuery("now_playing", () => fetcher(`/movie/now_playing`))
 }
+
+export function useDetail(movieId) {
+  return useQuery(["detail", movieId], (_, id) => fetcher(`/movie/${id}`))
+}
+
+export function useCredit(movieId) {
+  return useQuery(["credits", movieId], (_, id) =>
+    fetcher(`/movie/${id}/credits`)
+  )
+}

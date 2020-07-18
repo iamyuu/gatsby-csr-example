@@ -11,7 +11,7 @@ export function getImage(path, width = "original") {
 }
 
 /**
- * Formating date
+ * Formatting date
  * @param {string | Date} date
  * @returns {string} with format date: MMM, d YYYY
  */
@@ -23,4 +23,34 @@ export function formatDate(date) {
     month: "short",
     year: "numeric",
   })
+}
+
+/**
+ * Formatting movie duration
+ * @param {string | number} runtime
+ */
+export function formatRuntime(runtime) {
+  if (!runtime) return undefined
+
+  const hour = Math.floor(runtime / 60)
+  const minute = (hour * 60 - runtime) * -1
+
+  if (hour < 1) {
+    return `${minute}m`
+  }
+
+  return `${hour}h ${minute}m`
+}
+
+/**
+ * Formatting to currency USD (en-US)
+ * @param {string | number} number
+ */
+export function formatCurrency(number) {
+  const options = {
+    currency: "USD",
+    style: "currency",
+  }
+
+  return new Intl.NumberFormat("en-US", options).format(number)
 }
