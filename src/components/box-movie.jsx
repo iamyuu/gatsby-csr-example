@@ -51,7 +51,7 @@ export default function MovieBox(props) {
 
           <Skeleton isLoaded={!loading} w="150px" mb="5px">
             <Text as="h4" fontWeight="semibold" lineHeight="1" isTruncated>
-              {title}
+              {title || "Lorem, ipsum dolor."}
             </Text>
           </Skeleton>
 

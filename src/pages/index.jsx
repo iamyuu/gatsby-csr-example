@@ -1,24 +1,34 @@
 import React from "react"
-import { SimpleGrid } from "@chakra-ui/core"
-import MovieBox from "../components/movie-box"
+import { SimpleGrid, Box, Text, Icon } from "@chakra-ui/core"
+import BoxMovie from "../components/box-movie"
 import { useNowPlaying } from "../services/movie"
 
 export default function Home() {
   const { status, error, data } = useNowPlaying()
 
-  if (status === "loading") {
-    return [...Array(10)].map(value => <MovieBox key={value} loading />)
-  }
-
   if (status === "error") {
-    return <span>{error.message}</span>
+    return (
+      <Box
+        d="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        h="100vh"
+      >
+        <Icon name="warning" size="3rem" mb="5" />
+        <Text as="h4" fontSize="xl" fontWeight="semibold">
+          Oops! something went wrong
+        </Text>
+        <Text fontSize="sm">{error.message}</Text>
+      </Box>
+    )
   }
 
   return (
     <SimpleGrid m="2" minChildWidth="240px">
-      {data.results.map(movie => (
-        <MovieBox key={movie.id} {...movie} />
-      ))}
+      {status === "loading"
+        ? [...Array(10)].map((_, index) => <BoxMovie key={index} loading />)
+        : data.results.map(movie => <BoxMovie key={movie.id} {...movie} />)}
     </SimpleGrid>
   )
 }
