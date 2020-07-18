@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/core"
 import { formatDate, getImage } from "../utils"
 
-export default function Movie(props) {
+export default function MovieBox(props) {
   const { loading, id, poster_path, title, release_date, vote_average } = props
   const { colorMode } = useColorMode()
 
