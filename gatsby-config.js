@@ -1,10 +1,10 @@
-/**
- * Configure your Gatsby site with this file.
- *
- * See: https://www.gatsbyjs.org/docs/gatsby-config/
- */
+const { description } = require("./package.json")
 
 module.exports = {
-  /* Your site config here */
-  plugins: ["gatsby-plugin-chakra-ui"],
+  siteMetadata: {
+    title: `Movie App`,
+    description,
+    author: `iamyuu`,
+  },
+  plugins: [`gatsby-plugin-react-helmet`, `gatsby-plugin-chakra-ui`],
 }

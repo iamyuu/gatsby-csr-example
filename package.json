@@ -19,8 +19,10 @@
     "emotion-theming": "10.0.27",
     "gatsby": "2.24.3",
     "gatsby-plugin-chakra-ui": "0.1.4",
+    "gatsby-plugin-react-helmet": "3.3.10",
     "react": "16.13.1",
     "react-dom": "16.13.1",
+    "react-helmet": "6.1.0",
     "react-query": "2.5.2",
     "typeface-open-sans": "0.0.75"
   },
