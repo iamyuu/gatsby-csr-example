@@ -23,7 +23,7 @@ export default function MovieBox(props) {
   return (
     <Box
       m="2"
-      background={colorMode === "dark" ? "#222938" : "#f2f4f7"}
+      background={colorMode === "dark" ? "#222938" : "#e9eff4"}
       rounded="lg"
       overflow="hidden"
       shadow="md"
