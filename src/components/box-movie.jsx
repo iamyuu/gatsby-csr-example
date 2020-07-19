@@ -8,6 +8,7 @@ import {
   Skeleton,
   useColorMode,
 } from "@chakra-ui/core"
+import CircleBox from "./circle-box"
 import { formatDate, getImage } from "../utils"
 
 export default function MovieBox(props) {
@@ -35,19 +36,9 @@ export default function MovieBox(props) {
         </Skeleton>
 
         <Box p="6">
-          <Box
-            background={colorMode === "dark" ? "#141821" : "white"}
-            rounded="full"
-            d="inline-block"
-            p={!loading ? 2 : 0}
-            float="right"
-            fontSize="xs"
-            fontWeight="semibold"
-          >
-            <Skeleton isLoaded={!loading} rounded="full" p={loading ? 2 : 0}>
-              {rating || "0.0"}
-            </Skeleton>
-          </Box>
+          <CircleBox float="right" fontSize="xs">
+            {rating || "0.0"}
+          </CircleBox>
 
           <Skeleton isLoaded={!loading} w="150px" mb="5px">
             <Text as="h4" fontWeight="semibold" lineHeight="1" isTruncated>
