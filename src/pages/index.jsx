@@ -1,27 +1,14 @@
 import React from "react"
-import { SimpleGrid, Box, Text, Icon } from "@chakra-ui/core"
+import { SimpleGrid } from "@chakra-ui/core"
 import BoxMovie from "../components/box-movie"
+import Error from "../components/error-fallback"
 import { useNowPlaying } from "../services/movie"
 
 export default function Home() {
   const { status, error, data } = useNowPlaying()
 
   if (status === "error") {
-    return (
-      <Box
-        d="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        h="100vh"
-      >
-        <Icon name="warning" size="3rem" mb="5" />
-        <Text as="h4" fontSize="xl" fontWeight="semibold">
-          Oops! something went wrong
-        </Text>
-        <Text fontSize="sm">{error.message}</Text>
-      </Box>
-    )
+    return <Error message={error.message} />
   }
 
   return (

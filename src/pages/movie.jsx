@@ -8,6 +8,7 @@ import {
   Skeleton,
   useColorMode,
 } from "@chakra-ui/core"
+import Error from "../components/error-fallback"
 import CircleBox from "../components/circle-box"
 import {
   useDetail,
@@ -30,23 +31,13 @@ export default function Movie({ movieId }) {
     const isNotFound = error.message.includes(404)
 
     return (
-      <Box
-        d="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        h="100vh"
-      >
-        <Icon name="info" size="3rem" mb="5" />
-        <Text as="h4" fontSize="xl" fontWeight="semibold">
-          {isNotFound ? "Not Found" : "Oops! something went wrong"}
-        </Text>
-        <Text fontSize="sm">
-          {isNotFound
-            ? "Page you are looking for was not found"
-            : error.message}
-        </Text>
-      </Box>
+      <Error
+        icon={isNotFound ? "info" : "warning"}
+        title={isNotFound ? "Not Found" : "Oops! something went wrong"}
+        message={
+          isNotFound ? "Page you are looking for was not found" : error.message
+        }
+      />
     )
   }
 
