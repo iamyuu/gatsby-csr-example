@@ -4,28 +4,30 @@ import {
   Box,
   Text,
   Icon,
+  Badge,
   Image,
   AspectRatioBox,
   Skeleton,
   useColorMode,
 } from "@chakra-ui/core"
 import Error from "../components/error-fallback"
-import {
-  useDetail,
-  // useCredit
-} from "../services/movie"
-import { getImage, formatDate, formatDuration } from "../utils"
+import { useDetail } from "../services/movie"
+import { getImage, formatDate, formatDuration, formatCurrency } from "../utils"
 
-// function find(items, value, key = "job") {
-//   if (!value || items.length < 1) return {}
-
-//   return items.find(item => item[key] === value)
-// }
+const starColor = {
+  fill: {
+    light: "#141821",
+    dark: "#e8eaea",
+  },
+  noFill: {
+    light: "#e9eff4",
+    dark: "#2d313a",
+  },
+}
 
 export default function Movie({ movieId }) {
   const { colorMode } = useColorMode()
   const { status, error, data } = useDetail(movieId)
-  // const { status: statusCredit, data: credit } = useCredit(movieId)
 
   if (status === "error") {
     const isNotFound = error.message.includes(404)
@@ -54,7 +56,8 @@ export default function Movie({ movieId }) {
         </Skeleton>
       </Box>
 
-      <Box w={{ md: "75%" }} pl={{ md: 6, sm: 0 }} mt="10">
+      <Box w={{ md: "75%" }} pl={{ md: 6, sm: 0 }} mt={{ xs: 5, md: 0 }}>
+        {/* TODO: in mobile view move to top (before image) */}
         <Box mb="6">
           <Link to="/">
             <Icon name="arrow-back" fontSize="3xl" />
@@ -68,7 +71,7 @@ export default function Movie({ movieId }) {
             float="right"
             cursor="pointer"
             name="bookmark-add"
-            onClick={() => alert(`TODO: add to watch list`)}
+            onClick={() => alert(`TODO: user can add to watch list`)}
             color={colorMode === "dark" ? "white" : "#141821"}
           />
         </Box>
@@ -80,26 +83,20 @@ export default function Movie({ movieId }) {
         </Skeleton>
 
         <Box my="1" fontSize="sm" fontWeight="semibold">
+          <Skeleton isLoaded={status !== "loading"} d="inline-block" mr="2">
+            <Badge rounded="full" px="2">
+              {data ? data.status : null}
+            </Badge>
+          </Skeleton>
+
           <Skeleton isLoaded={status !== "loading"} d="inline-block">
-            <Text as="span">
-              {data
-                ? data.vote_average.toString().length === 1
-                  ? `${data.vote_average}.0`
-                  : data.vote_average
-                : "0.0"}
-            </Text>
+            {data ? formatDate(data.release_date) : "Jan 1, 1970"}
           </Skeleton>
 
           {data && data.runtime ? <span> &bull; </span> : ``}
 
           <Skeleton isLoaded={status !== "loading"} d="inline-block">
             {data ? formatDuration(data.runtime) : "0h 0m"}
-          </Skeleton>
-
-          <span> &bull; </span>
-
-          <Skeleton isLoaded={status !== "loading"} d="inline-block">
-            {data ? formatDate(data.release_date) : "Jan 1, 1970"}
           </Skeleton>
         </Box>
 
@@ -125,7 +122,7 @@ export default function Movie({ movieId }) {
           </Box>
         </Box>
 
-        <Box mb="10">
+        <Box mb="6">
           <Text fontSize="xl" fontWeight="semibold">
             Overview
           </Text>
@@ -141,28 +138,48 @@ export default function Movie({ movieId }) {
           )}
         </Box>
 
-        {/* {statusCredit === "success" && (
-          <Box d="flex" flexDirection={{ xs: "column", md: "row" }}>
-            <Box lineHeight="1.3">
-              <Text fontWeight="bold">{find(credit.crew, "Author").name}</Text>
-              <Text fontSize="sm">Author</Text>
-            </Box>
-
-            <Box lineHeight="1.3" mx={{ md: "9rem" }} my={{ xs: 4, md: 0 }}>
-              <Text fontWeight="bold">
-                {find(credit.crew, "Director").name}
-              </Text>
-              <Text fontSize="sm">Director</Text>
-            </Box>
-
-            <Box lineHeight="1.3">
-              <Text fontWeight="bold">
-                {find(credit.crew, "Screenplay").name}
-              </Text>
-              <Text fontSize="sm">Screenplay</Text>
-            </Box>
+        {data && (
+          <Box mb="6">
+            {[...Array(5)].map((_, index) => (
+              <Icon
+                key={index}
+                name="star"
+                mr="2"
+                color={
+                  // TODO: if has a decimal, only fill half
+                  index < Math.round(data.vote_average) / 2
+                    ? starColor.fill[colorMode]
+                    : starColor.noFill[colorMode]
+                }
+              />
+            ))}
+            {data ? ` ${data.vote_count} ` : 0}
+            <Text as="span" fontSize="sm">
+              vote
+            </Text>
           </Box>
-        )} */}
+        )}
+
+        <Box d="flex" flexDirection={{ xs: "column", md: "row" }}>
+          <Box lineHeight="1.3">
+            <Text fontWeight="bold">{data ? data.popularity : "000.000"}</Text>
+            <Text fontSize="sm">Popularity</Text>
+          </Box>
+
+          <Box lineHeight="1.3" mx={{ md: "10rem" }} my={{ xs: 5, md: 0 }}>
+            <Text fontWeight="bold">
+              {data ? formatCurrency(data.budget) : "$0.000.00"}
+            </Text>
+            <Text fontSize="sm">Budget</Text>
+          </Box>
+
+          <Box lineHeight="1.3">
+            <Text fontWeight="bold">
+              {data ? formatCurrency(data.revenue) : "$0.000.00"}
+            </Text>
+            <Text fontSize="sm">Revenue</Text>
+          </Box>
+        </Box>
       </Box>
     </Box>
   )
