@@ -1,4 +1,5 @@
 import React from "react"
+import { Link } from "gatsby"
 import {
   Box,
   Text,
@@ -9,7 +10,6 @@ import {
   useColorMode,
 } from "@chakra-ui/core"
 import Error from "../components/error-fallback"
-import CircleBox from "../components/circle-box"
 import {
   useDetail,
   // useCredit
@@ -49,40 +49,29 @@ export default function Movie({ movieId }) {
             <Image
               alt={`Poster ${data ? data.title : null}`}
               src={data ? getImage(data.poster_path, 500) : null}
-              fallbackSrc="https://mymdb.comyn.pw/img/posters/noposter.jpg"
             />
           </AspectRatioBox>
         </Skeleton>
       </Box>
 
       <Box w={{ md: "75%" }} pl={{ md: 6, sm: 0 }} mt="10">
-        <CircleBox
-          w={46}
-          float="right"
-          fontSize="xl"
-          loading={status === "loading"}
-        >
-          {data
-            ? data.vote_average.toString().length === 1
-              ? `${data.vote_average}.0`
-              : data.vote_average
-            : "0.0"}
-        </CircleBox>
+        <Box mb="6">
+          <Link to="/">
+            <Icon name="arrow-back" fontSize="3xl" />
+          </Link>
 
-        <CircleBox
-          mr="2"
-          float="right"
-          fontSize="xl"
-          cursor="pointer"
-          onClick={() => alert(`TODO: add to watch list`)}
-        >
           <Icon
-            w={30}
             size={25}
+            w={30}
+            mr="2"
+            fontSize="2xl"
+            float="right"
+            cursor="pointer"
             name="bookmark-add"
+            onClick={() => alert(`TODO: add to watch list`)}
             color={colorMode === "dark" ? "white" : "#141821"}
           />
-        </CircleBox>
+        </Box>
 
         <Skeleton isLoaded={status !== "loading"} d="inline-block">
           <Text as="h2" fontSize="3xl" fontWeight="bold">
@@ -90,35 +79,53 @@ export default function Movie({ movieId }) {
           </Text>
         </Skeleton>
 
-        <Box fontWeight="semibold" my="1">
+        <Box my="1" fontSize="sm" fontWeight="semibold">
           <Skeleton isLoaded={status !== "loading"} d="inline-block">
-            {data ? formatDate(data.release_date) : "Jan 1, 1970"}
+            <Text as="span">
+              {data
+                ? data.vote_average.toString().length === 1
+                  ? `${data.vote_average}.0`
+                  : data.vote_average
+                : "0.0"}
+            </Text>
           </Skeleton>
-          {` `} &bull; {` `}
-          <Skeleton isLoaded={status !== "loading"} d="inline-block">
-            {data && data.genres.length > 1
-              ? data.genres.map((genre, index) =>
-                  data.genres.length <= index + 1
-                    ? `${genre.name}`
-                    : `${genre.name}, `
-                )
-              : "Lorem, ipsum, dolor"}
-          </Skeleton>
-          {` `} &bull; {` `}
+
+          {data && data.runtime ? <span> &bull; </span> : ``}
+
           <Skeleton isLoaded={status !== "loading"} d="inline-block">
             {data ? formatDuration(data.runtime) : "0h 0m"}
           </Skeleton>
+
+          <span> &bull; </span>
+
+          <Skeleton isLoaded={status !== "loading"} d="inline-block">
+            {data ? formatDate(data.release_date) : "Jan 1, 1970"}
+          </Skeleton>
         </Box>
 
-        <Skeleton isLoaded={status !== "loading"} d="inline-block">
-          <Text as="i" fontWeight={{ md: 300, xm: 500 }}>
-            {data
-              ? data.tagline
-              : "Lorem ipsum dolor sit amet consectetur adipisicing elit."}
+        <Box my="4">
+          <Text as="span" fontSize="lg" fontWeight="semibold">
+            Genre:
           </Text>
-        </Skeleton>
 
-        <Box mt="4" mb="10">
+          <Box d="inline-block" ml="2">
+            {data ? (
+              data.genres.map((genre, index) =>
+                data.genres.length <= index + 1
+                  ? `${genre.name}`
+                  : `${genre.name}, `
+              )
+            ) : (
+              <>
+                <Skeleton d="inline-block" w="50px" h="20px" />,
+                <Skeleton d="inline-block" w="50px" h="20px" ml="2" />,
+                <Skeleton d="inline-block" w="50px" h="20px" ml="2" />
+              </>
+            )}
+          </Box>
+        </Box>
+
+        <Box mb="10">
           <Text fontSize="xl" fontWeight="semibold">
             Overview
           </Text>
