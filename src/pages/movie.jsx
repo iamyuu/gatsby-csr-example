@@ -45,15 +45,13 @@ export default function Movie({ movieId }) {
     <Box m="2" p="4" d={{ md: "flex" }}>
       <Box rounded="lg" overflow="hidden" shadow="md" w={{ md: 1 / 4 }}>
         <Skeleton isLoaded={status !== "loading"}>
-          {data && (
-            <AspectRatioBox h={450}>
-              <Image
-                alt={`Poster ${data.title}`}
-                src={getImage(data.poster_path, 500)}
-                fallbackSrc="https://mymdb.comyn.pw/img/posters/noposter.jpg"
-              />
-            </AspectRatioBox>
-          )}
+          <AspectRatioBox h={450}>
+            <Image
+              alt={`Poster ${data ? data.title : null}`}
+              src={data ? getImage(data.poster_path, 500) : null}
+              fallbackSrc="https://mymdb.comyn.pw/img/posters/noposter.jpg"
+            />
+          </AspectRatioBox>
         </Skeleton>
       </Box>
 
