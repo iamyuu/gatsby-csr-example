@@ -29,7 +29,7 @@ export function formatDate(date) {
  * Formatting movie duration
  * @param {string | number} runtime
  */
-export function formatRuntime(runtime) {
+export function formatDuration(runtime) {
   if (!runtime) return undefined
 
   const hour = Math.floor(runtime / 60)
@@ -47,6 +47,8 @@ export function formatRuntime(runtime) {
  * @param {string | number} number
  */
 export function formatCurrency(number) {
+  if (!number) return undefined
+
   const options = {
     currency: "USD",
     style: "currency",
