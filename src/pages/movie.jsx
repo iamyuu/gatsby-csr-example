@@ -1,5 +1,6 @@
 import React from "react"
 import { Link } from "gatsby"
+import { css } from "@emotion/core"
 import {
   Box,
   Text,
@@ -15,11 +16,11 @@ import { useDetail } from "../services/movie"
 import { getImage, formatDate, formatDuration, formatCurrency } from "../utils"
 
 const starColor = {
-  fill: {
+  filled: {
     light: "#141821",
     dark: "#e8eaea",
   },
-  noFill: {
+  noFilled: {
     light: "#e9eff4",
     dark: "#2d313a",
   },
@@ -140,19 +141,28 @@ export default function Movie({ movieId }) {
 
         {data && (
           <Box mb="6">
-            {[...Array(5)].map((_, index) => (
-              <Icon
-                key={index}
-                name="star"
-                mr="2"
-                color={
-                  // TODO: if has a decimal, only fill half
-                  index < Math.round(data.vote_average) / 2
-                    ? starColor.fill[colorMode]
-                    : starColor.noFill[colorMode]
-                }
-              />
-            ))}
+            {[...Array(5)].map((_, index) => {
+              const averageDivided = Math.round(data.vote_average) / 2
+              const iconName =
+                index !== Math.floor(averageDivided) ? `star` : `half-star`
+
+              const iconColor =
+                index < averageDivided
+                  ? starColor.filled[colorMode]
+                  : starColor.noFilled[colorMode]
+
+              return (
+                <Icon
+                  mr="2"
+                  key={index}
+                  name={iconName}
+                  color={iconColor}
+                  css={css`
+                    --half-star-bg-color: ${starColor.noFilled[colorMode]};
+                  `}
+                />
+              )
+            })}
             {data ? ` ${data.vote_count} ` : 0}
             <Text as="span" fontSize="sm">
               vote
