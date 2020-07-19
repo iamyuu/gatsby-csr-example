@@ -47,7 +47,7 @@ export function formatDuration(runtime) {
  * @param {string | number} number
  */
 export function formatCurrency(number) {
-  if (!number) return undefined
+  if (!number || number === 0) return "-"
 
   const options = {
     currency: "USD",
