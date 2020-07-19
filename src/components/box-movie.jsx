@@ -35,19 +35,19 @@ export default function MovieBox(props) {
         </Skeleton>
 
         <Box p="6">
-          <Skeleton isLoaded={!loading}>
-            <Box
-              background={colorMode === "dark" ? "#141821" : "white"}
-              rounded="full"
-              d="inline-block"
-              p="2"
-              float="right"
-              fontSize="xs"
-              fontWeight="semibold"
-            >
-              {rating}
-            </Box>
-          </Skeleton>
+          <Box
+            background={colorMode === "dark" ? "#141821" : "white"}
+            rounded="full"
+            d="inline-block"
+            p={!loading ? 2 : 0}
+            float="right"
+            fontSize="xs"
+            fontWeight="semibold"
+          >
+            <Skeleton isLoaded={!loading} rounded="full" p={loading ? 2 : 0}>
+              {rating || "0.0"}
+            </Skeleton>
+          </Box>
 
           <Skeleton isLoaded={!loading} w="150px" mb="5px">
             <Text as="h4" fontWeight="semibold" lineHeight="1" isTruncated>
