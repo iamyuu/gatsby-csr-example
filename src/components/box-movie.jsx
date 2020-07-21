@@ -28,7 +28,7 @@ export default function MovieBox(props) {
       overflow="hidden"
       shadow="md"
     >
-      <Link to={`/movie/${id}`}>
+      <Link to={id ? `/movie/${id}` : null}>
         <Skeleton isLoaded={!loading}>
           <AspectRatioBox h={400}>
             <Image src={getImage(poster_path, 300)} alt={`Poster ${title}`} />
@@ -40,7 +40,7 @@ export default function MovieBox(props) {
             {rating || "0.0"}
           </CircleBox>
 
-          <Skeleton isLoaded={!loading} w="150px" mb="5px">
+          <Skeleton isLoaded={!loading} w="130px" mb="5px">
             <Text as="h4" fontWeight="semibold" lineHeight="1" isTruncated>
               {title || "Lorem, ipsum dolor."}
             </Text>
