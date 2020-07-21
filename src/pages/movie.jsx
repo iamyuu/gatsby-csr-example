@@ -11,6 +11,7 @@ import {
   Skeleton,
   useColorMode,
 } from "@chakra-ui/core"
+import Layout from "../components/layout"
 import Error from "../components/error-fallback"
 import { useDetail } from "../services/movie"
 import { getImage, formatDate, formatDuration, formatCurrency } from "../utils"
@@ -45,24 +46,25 @@ export default function Movie({ movieId }) {
   }
 
   return (
-    <Box m="2" p="4" d={{ md: "flex" }}>
-      <Box rounded="lg" overflow="hidden" shadow="md" w={{ md: 1 / 4 }}>
-        <Skeleton isLoaded={status !== "loading"}>
-          <AspectRatioBox h={450}>
-            <Image
-              alt={`Poster ${data ? data.title : null}`}
-              src={data ? getImage(data.poster_path, 500) : null}
-            />
-          </AspectRatioBox>
-        </Skeleton>
-      </Box>
+    <Layout title={data ? data.title : null}>
+      <Box m="2" p="4" d={{ md: "flex" }}>
+        <Box rounded="lg" overflow="hidden" shadow="md" w={{ md: 1 / 4 }}>
+          <Skeleton isLoaded={status !== "loading"}>
+            <AspectRatioBox h={450}>
+              <Image
+                alt={`Poster ${data ? data.title : null}`}
+                src={data ? getImage(data.poster_path, 500) : null}
+              />
+            </AspectRatioBox>
+          </Skeleton>
+        </Box>
 
-      <Box w={{ md: "75%" }} pl={{ md: 6, sm: 0 }} mt={{ xs: 5, md: 0 }}>
-        {/* TODO: in mobile view move to top (before image) */}
-        <Box mb="6">
-          <Link to="/">
-            <Icon name="arrow-back" fontSize="3xl" />
-          </Link>
+        <Box w={{ md: "75%" }} pl={{ md: 6, sm: 0 }} mt={{ xs: 5, md: 0 }}>
+          <Skeleton isLoaded={status !== "loading"} d="inline-block">
+            <Text as="h2" fontSize="3xl" fontWeight="bold">
+              {data ? data.title : "Lorem, ipsum dolor."}
+            </Text>
+          </Skeleton>
 
           <Icon
             size={25}
@@ -75,122 +77,127 @@ export default function Movie({ movieId }) {
             onClick={() => alert(`TODO: user can add to watch list`)}
             color={colorMode === "dark" ? "white" : "#141821"}
           />
-        </Box>
 
-        <Skeleton isLoaded={status !== "loading"} d="inline-block">
-          <Text as="h2" fontSize="3xl" fontWeight="bold">
-            {data ? data.title : "Lorem, ipsum dolor."}
-          </Text>
-        </Skeleton>
+          <Box my="1" fontSize="sm" fontWeight="semibold">
+            <Skeleton isLoaded={status !== "loading"} d="inline-block">
+              <Badge rounded="full" px="2" mr="2">
+                {data ? data.status : null}
+              </Badge>
 
-        <Box my="1" fontSize="sm" fontWeight="semibold">
-          <Skeleton isLoaded={status !== "loading"} d="inline-block" mr="2">
-            <Badge rounded="full" px="2">
-              {data ? data.status : null}
-            </Badge>
-          </Skeleton>
+              <Text as="span">
+                {data ? formatDate(data.release_date) : "Jan 1, 1970"}
+              </Text>
 
-          <Skeleton isLoaded={status !== "loading"} d="inline-block">
-            {data ? formatDate(data.release_date) : "Jan 1, 1970"}
-          </Skeleton>
+              {data && data.runtime ? <span> &bull; </span> : ``}
 
-          {data && data.runtime ? <span> &bull; </span> : ``}
+              <Text as="span">
+                {data ? formatDuration(data.runtime) : "0h 0m"}
+              </Text>
+            </Skeleton>
+          </Box>
 
-          <Skeleton isLoaded={status !== "loading"} d="inline-block">
-            {data ? formatDuration(data.runtime) : "0h 0m"}
-          </Skeleton>
-        </Box>
+          <Box my="4">
+            <Text as="span" fontSize="lg">
+              Genre:
+            </Text>
 
-        <Box my="4">
-          <Text as="span" fontSize="lg" fontWeight="semibold">
-            Genre:
-          </Text>
+            <Box d="inline-block" ml="2">
+              {data ? (
+                data.genres.map((genre, index) =>
+                  data.genres.length <= index + 1
+                    ? `${genre.name}`
+                    : `${genre.name}, `
+                )
+              ) : (
+                <Skeleton w="150px" h="25px" />
+              )}
+            </Box>
+          </Box>
 
-          <Box d="inline-block" ml="2">
-            {data ? (
-              data.genres.map((genre, index) =>
-                data.genres.length <= index + 1
-                  ? `${genre.name}`
-                  : `${genre.name}, `
-              )
+          <Box mb="6">
+            <Text fontSize="xl" fontWeight="semibold">
+              Overview
+            </Text>
+
+            {status !== "loading" ? (
+              <Text fontSize="md">{data.overview}</Text>
             ) : (
               <>
-                <Skeleton d="inline-block" w="50px" h="20px" />,
-                <Skeleton d="inline-block" w="50px" h="20px" ml="2" />,
-                <Skeleton d="inline-block" w="50px" h="20px" ml="2" />
+                <Skeleton my="10px" h="20px" />
+                <Skeleton my="10px" h="20px" />
+                <Skeleton my="10px" h="20px" w="85%" />
               </>
             )}
           </Box>
-        </Box>
 
-        <Box mb="6">
-          <Text fontSize="xl" fontWeight="semibold">
-            Overview
-          </Text>
+          {data && (
+            <Box mb="6">
+              <Text as="span" pr="2" fontSize="sm">
+                {data.vote_average.toString().length === 1
+                  ? `${data.vote_average}.0`
+                  : data.vote_average}
+              </Text>
 
-          {status !== "loading" ? (
-            <Text fontSize="md">{data.overview}</Text>
-          ) : (
-            <>
-              <Skeleton my="10px" h="20px" />
-              <Skeleton my="10px" h="20px" />
-              <Skeleton my="10px" h="20px" w="85%" />
-            </>
+              {[...Array(5)].map((_, index) => {
+                const averageDivided = Math.round(data.vote_average) / 2
+                const iconName =
+                  index !== Math.floor(averageDivided) ? `star` : `half-star`
+
+                const iconColor =
+                  index < averageDivided
+                    ? starColor.filled[colorMode]
+                    : starColor.noFilled[colorMode]
+
+                return (
+                  <Icon
+                    mr="2"
+                    key={index}
+                    name={iconName}
+                    color={iconColor}
+                    size="19px"
+                    css={css`
+                      --half-star-bg-color: ${starColor.noFilled[colorMode]};
+                    `}
+                  />
+                )
+              })}
+              {data ? ` (${data.vote_count}) ` : 0}
+              <Text as="span" fontSize="sm">
+                vote
+              </Text>
+            </Box>
           )}
-        </Box>
 
-        {data && (
-          <Box mb="6">
-            {[...Array(5)].map((_, index) => {
-              const averageDivided = Math.round(data.vote_average) / 2
-              const iconName =
-                index !== Math.floor(averageDivided) ? `star` : `half-star`
+          <Box d="flex" flexDirection={{ xs: "column", md: "row" }}>
+            <Box lineHeight="1.3">
+              <Skeleton isLoaded={status !== "loading"}>
+                <Text fontWeight="bold">
+                  {data ? data.popularity : "000.000"}
+                </Text>
+              </Skeleton>
+              <Text fontSize="sm">Popularity</Text>
+            </Box>
 
-              const iconColor =
-                index < averageDivided
-                  ? starColor.filled[colorMode]
-                  : starColor.noFilled[colorMode]
+            <Box lineHeight="1.3" mx={{ md: "10rem" }} my={{ xs: 5, md: 0 }}>
+              <Skeleton isLoaded={status !== "loading"}>
+                <Text fontWeight="bold">
+                  {data ? formatCurrency(data.budget) : "$0.000.00"}
+                </Text>
+              </Skeleton>
+              <Text fontSize="sm">Budget</Text>
+            </Box>
 
-              return (
-                <Icon
-                  mr="2"
-                  key={index}
-                  name={iconName}
-                  color={iconColor}
-                  css={css`
-                    --half-star-bg-color: ${starColor.noFilled[colorMode]};
-                  `}
-                />
-              )
-            })}
-            {data ? ` ${data.vote_count} ` : 0}
-            <Text as="span" fontSize="sm">
-              vote
-            </Text>
-          </Box>
-        )}
-
-        <Box d="flex" flexDirection={{ xs: "column", md: "row" }}>
-          <Box lineHeight="1.3">
-            <Text fontWeight="bold">{data ? data.popularity : "000.000"}</Text>
-            <Text fontSize="sm">Popularity</Text>
-          </Box>
-
-          <Box lineHeight="1.3" mx={{ md: "10rem" }} my={{ xs: 5, md: 0 }}>
-            <Text fontWeight="bold">
-              {data ? formatCurrency(data.budget) : "$0.000.00"}
-            </Text>
-            <Text fontSize="sm">Budget</Text>
-          </Box>
-
-          <Box lineHeight="1.3">
-            <Text fontWeight="bold">
-              {data ? formatCurrency(data.revenue) : "$0.000.00"}
-            </Text>
-            <Text fontSize="sm">Revenue</Text>
+            <Box lineHeight="1.3">
+              <Skeleton isLoaded={status !== "loading"}>
+                <Text fontWeight="bold">
+                  {data ? formatCurrency(data.revenue) : "$0.000.00"}
+                </Text>
+              </Skeleton>
+              <Text fontSize="sm">Revenue</Text>
+            </Box>
           </Box>
         </Box>
       </Box>
-    </Box>
+    </Layout>
   )
 }
